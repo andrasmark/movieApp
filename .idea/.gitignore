@@ -1,0 +1,55 @@
+# Flutter and Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.flutter/
+.pub-cache/
+.pub/
+.melos_tool/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+.idea/*
+
+# VS Code
+.vscode/
+.vscode/*
+
+# MacOS
+.DS_Store
+
+# iOS
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/.symlinks/
+ios/Flutter/Flutter.podspec
+
+# Android
+*.keystore
+android/.gradle/
+android/app/proguard-rules.pro
+android/app/debug.keystore
+android/local.properties
+android/app/*.jks
+
+# Linux
+linux/flutter/generated_plugin_registrant.cc
+
+# Windows
+windows/flutter/generated_plugin_registrant.cc
+
+# Web
+web/.dart_tool/
+web/.dart_tool/*
+
+# Firebase (if using FlutterFire)
+**/firebase_app_id_file.json
