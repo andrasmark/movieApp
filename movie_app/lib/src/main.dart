@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb_api/tmdb_api.dart';
+
+
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +55,15 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+
+  // final tmdbWithCustomLogs = TMDB( //TMDB instance
+  //   ApiKeys('77605b9f30ff33730aaff10f5bb13ead', 'apiReadAccessTokenv3'),//ApiKeys instance with your keys,
+  //   logConfig: const ConfigLogger(
+  //     showLogs: true,//must be true than only all other logs will be shown
+  //     showErrorLogs: true,
+  //   ),
+  // );
+  // Map result = await tmdb.v3.trending.getTrending(mediaType = MediaType.all,timeWindow = TimeWindow.day);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
