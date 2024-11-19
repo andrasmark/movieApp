@@ -6,7 +6,7 @@ import 'package:movie_app/src/pages/main_pages/home_page.dart';
 import '../../constants/constants.dart';
 
 class LoginPage extends StatefulWidget {
-  static String id = 'login_screen';
+  static String id = 'login_page';
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
-                        Navigator.pushNamed(context, HomePage.id);
+                        Navigator.pushReplacementNamed(context, HomePage.id);
                       }
                       setState(() {
                         showSpinner = false;
