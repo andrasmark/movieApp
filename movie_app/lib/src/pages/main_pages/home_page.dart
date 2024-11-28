@@ -3,6 +3,7 @@ import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
 
 import '../../components/NavBar.dart';
+import '../../services/firebase.dart';
 import 'movies_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,6 +32,12 @@ class _HomePageState extends State<HomePage> {
           break;
       }
     });
+  }
+
+  @override
+  void initState() {
+    getIds();
+    super.initState();
   }
 
   @override

@@ -6,7 +6,7 @@ import 'package:movie_app/src/pages/main_pages/home_page.dart';
 import 'package:movie_app/src/pages/main_pages/movies_page.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'package:movie_app/src/pages/welcome_page.dart';
+import 'package:movie_app/src/pages/movie_details_page.dart';
 
 import 'firebase_options.dart';
 
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system, // Use system theme (light/dark)
-      home: WelcomePage(),
+      home: LoginPage(),
       routes: {
         HomePage.id: (context) => HomePage(),
         MoviesPage.id: (context) => MoviesPage(),
@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
         ProfilePage.id: (context) => ProfilePage(),
         LoginPage.id: (context) => LoginPage(),
         RegistrationPage.id: (context) => RegistrationPage(),
+        MovieDetailsPage.id: (context) => MovieDetailsPage()
       },
     );
   }
