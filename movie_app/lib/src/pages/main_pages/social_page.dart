@@ -8,12 +8,14 @@ import 'movies_page.dart';
 class SocialPage extends StatefulWidget {
   static String id = 'social_page';
 
+  const SocialPage({super.key});
+
   @override
   State<SocialPage> createState() => _SocialPageState();
 }
 
 class _SocialPageState extends State<SocialPage> {
-  int _selectedIndex = 2;
+  final int _selectedIndex = 2;
 
   void _onNavBarItemTapped(int index) {
     setState(() {
@@ -35,29 +37,29 @@ class _SocialPageState extends State<SocialPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Social')),
+      appBar: AppBar(title: const Text('Social')),
       body: Column(
         children: [
-          Text("My Friends"),
+          const Text("My Friends"),
           // Friend list placeholder
           Expanded(
             child: ListView.builder(
               itemCount: 10,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Icon(Icons.account_circle),
+                  leading: const Icon(Icons.account_circle),
                   title: Text('Friend ${index + 1}'),
                 );
               },
             ),
           ),
-          Text("Recommended Friends"),
+          const Text("Recommended Friends"),
           Expanded(
             child: ListView.builder(
               itemCount: 10,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Icon(Icons.account_circle),
+                  leading: const Icon(Icons.account_circle),
                   title: Text('Friend ${index + 1}'),
                 );
               },

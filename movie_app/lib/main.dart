@@ -4,7 +4,9 @@ import 'package:movie_app/src/pages/main_pages/movies_page.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
 
+
 void main() {
+
   runApp(const MyApp());
 }
 
@@ -20,13 +22,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: const HomePage(),
       routes: {
-        HomePage.id: (context) => HomePage(),
-        MoviesPage.id: (context) => MoviesPage(),
-        SocialPage.id: (context) => SocialPage(),
-        ProfilePage.id: (context) => ProfilePage(),
+        HomePage.id: (context) => const HomePage(),
+        MoviesPage.id: (context) => const MoviesPage(),
+        SocialPage.id: (context) => const SocialPage(),
+        ProfilePage.id: (context) => const ProfilePage(),
       },
     );
   }
+
+
+
 }

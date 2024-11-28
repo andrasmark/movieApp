@@ -8,12 +8,14 @@ import '../../components/NavBar.dart';
 class MoviesPage extends StatefulWidget {
   static String id = 'movies_page';
 
+  const MoviesPage({super.key});
+
   @override
   State<MoviesPage> createState() => _MoviesPageState();
 }
 
 class _MoviesPageState extends State<MoviesPage> {
-  int _selectedIndex = 1;
+  final int _selectedIndex = 1;
 
   void _onNavBarItemTapped(int index) {
     setState(() {
@@ -35,8 +37,8 @@ class _MoviesPageState extends State<MoviesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Movies')),
-      body: Column(
+      appBar: AppBar(title: const Text('Movies')),
+      body: const Column(
         children: [
           TextField(
             decoration: InputDecoration(

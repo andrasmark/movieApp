@@ -2,36 +2,38 @@ import 'package:flutter/material.dart';
 
 class RegistrationPage extends StatelessWidget {
   static String id = 'registration_page';
+
+  const RegistrationPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registration')),
+      appBar: AppBar(title: const Text('Registration')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.account_circle, size: 100),
-            TextField(
+            const Icon(Icons.account_circle, size: 100),
+            const TextField(
               decoration: InputDecoration(labelText: 'Username'),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(labelText: 'Confirm Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Sign up'),
+              child: const Text('Sign up'),
             ),
           ],
         ),

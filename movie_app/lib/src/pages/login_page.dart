@@ -6,41 +6,43 @@ import 'main_pages/home_page.dart';
 class LoginPage extends StatelessWidget {
   static String id = 'login_page';
 
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login Page')),
+      appBar: AppBar(title: const Text('Login Page')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.account_circle, size: 100),
-            TextField(
+            const Icon(Icons.account_circle, size: 100),
+            const TextField(
               decoration: InputDecoration(labelText: 'Email'),
             ),
-            TextField(
+            const TextField(
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RegistrationPage()),
+                  MaterialPageRoute(builder: (context) => const RegistrationPage()),
                 );
               },
-              child: Text('Sign up'),
+              child: const Text('Sign up'),
             ),
           ],
         ),

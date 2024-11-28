@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 BottomNavigationBar NavBar(
-    int _selectedIndex, void Function(int) _onNavBarItemTapped) {
+    int selectedIndex, void Function(int) onNavBarItemTapped) {
   return BottomNavigationBar(
-    currentIndex: _selectedIndex,
-    onTap: _onNavBarItemTapped,
+    currentIndex: selectedIndex,
+    onTap: onNavBarItemTapped,
     selectedItemColor: Colors.grey,
     unselectedItemColor: Colors.blueAccent,
     items: const [
