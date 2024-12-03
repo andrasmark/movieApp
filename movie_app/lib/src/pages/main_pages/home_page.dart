@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> {
     upcomingMovies = Api().getUpcomingMovies();
     topRatedMovies = Api().getTopRatedMovies();
     popularMovies = Api().getPopularMovies();
+    
+    getIds();
     super.initState();
   }
 
@@ -48,13 +50,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-
-  @override
-  void initState() {
-    getIds();
-    super.initState();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
