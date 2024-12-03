@@ -6,7 +6,7 @@ import 'package:movie_app/src/pages/main_pages/home_page.dart';
 import '../../constants/constants.dart';
 
 class LoginPage extends StatefulWidget {
-  static String id = 'login_screen';
+  static String id = 'login_page';
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -67,25 +67,26 @@ class _LoginPageState extends State<LoginPage> {
                 height: 24.0,
               ),
               RoundedButton(
-                  colour: Colors.lightBlueAccent,
-                  title: 'Log in',
-                  onPress: () async {
-                    setState(() {
-                      showSpinner = true;
-                    });
-                    try {
-                      final user = await _auth.signInWithEmailAndPassword(
-                          email: email, password: password);
-                      if (user != null) {
-                        Navigator.pushNamed(context, HomePage.id);
-                      }
-                      setState(() {
-                        showSpinner = false;
-                      });
-                    } catch (e) {
-                      print(e);
+                colour: Colors.lightBlueAccent,
+                title: 'Log in',
+                onPress: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
+                  try {
+                    final user = await _auth.signInWithEmailAndPassword(
+                        email: email, password: password);
+                    if (user != null) {
+                      Navigator.pushReplacementNamed(context, HomePage.id);
                     }
-                  }),
+                    setState(() {
+                      showSpinner = false;
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -128,49 +129,3 @@ class RoundedButton extends StatelessWidget {
     );
   }
 }
-
-// class LoginPage extends StatelessWidget {
-//   static String id = 'login_page';
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Login Page')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Icon(Icons.account_circle, size: 100),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Email'),
-//             ),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Password'),
-//               obscureText: true,
-//             ),
-//             SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => HomePage()),
-//                 );
-//               },
-//               child: Text('Login'),
-//             ),
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => RegistrationPage()),
-//                 );
-//               },
-//               child: Text('Sign up'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

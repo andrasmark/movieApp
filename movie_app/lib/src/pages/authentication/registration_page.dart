@@ -7,7 +7,7 @@ import '../../constants/constants.dart';
 import 'login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
-  static String id = 'registration_screen';
+  static String id = 'registration_page';
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
@@ -84,7 +84,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           await _auth.createUserWithEmailAndPassword(
                               email: email, password: password);
                       if (newUser != null) {
-                        Navigator.pushNamed(context, HomePage.id);
+                        Navigator.pushReplacementNamed(context, HomePage.id);
                       }
                       setState(() {
                         showSpinner = false;

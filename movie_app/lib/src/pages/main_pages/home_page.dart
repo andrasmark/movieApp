@@ -5,6 +5,7 @@ import 'package:movie_app/src/pages/main_pages/social_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../components/NavBar.dart';
+import '../../services/firebase.dart';
 import 'movies_page.dart';
 import '../../../models/movie_model.dart';
 
@@ -46,6 +47,12 @@ class _HomePageState extends State<HomePage> {
           break;
       }
     });
+  }
+
+  @override
+  void initState() {
+    getIds();
+    super.initState();
   }
 
   @override
