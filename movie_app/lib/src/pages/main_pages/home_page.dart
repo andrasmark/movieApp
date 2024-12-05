@@ -1,13 +1,12 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/src/services/api.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:movie_app/src/services/api.dart';
 
-import '../../components/NavBar.dart';
-import '../../services/firebase.dart';
-import 'movies_page.dart';
 import '../../../models/movie_model.dart';
+import '../../components/NavBar.dart';
+import 'movies_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,8 +28,8 @@ class _HomePageState extends State<HomePage> {
     upcomingMovies = Api().getUpcomingMovies();
     topRatedMovies = Api().getTopRatedMovies();
     popularMovies = Api().getPopularMovies();
-    
-    getIds();
+
+    //getIds();
     super.initState();
   }
 
@@ -50,7 +49,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                       final movie = movies[index];
                       return Container(
                         width: 188,
-                        margin:EdgeInsets.symmetric(horizontal: 0),
+                        margin: EdgeInsets.symmetric(horizontal: 0),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15)),
@@ -121,6 +120,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     final movies = snaphot.data!;
+
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: movies.length,

@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         ProfilePage.id: (context) => ProfilePage(),
         LoginPage.id: (context) => LoginPage(),
         RegistrationPage.id: (context) => RegistrationPage(),
-        MovieDetailsPage.id: (context) => MovieDetailsPage()
+        MovieDetailsPage.id: (context) => MovieDetailsPage(),
       },
     );
   }
