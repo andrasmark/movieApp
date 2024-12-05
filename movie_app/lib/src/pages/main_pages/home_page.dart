@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/src/services/api.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'movies_page.dart';
 
 import '../../components/NavBar.dart';
 import '../../services/firebase.dart';
 import '../../components/MovieCardWidget.dart';
-import 'movies_page.dart';
 import '../../../models/movie_model.dart';
+import 'package:movie_app/src/services/api.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,6 +31,8 @@ class _HomePageState extends State<HomePage> {
     upcomingMovies = Api().getUpcomingMovies();
     topRatedMovies = Api().getTopRatedMovies();
     popularMovies = Api().getPopularMovies();
+
+    //getIds();
     super.initState();
   }
 
@@ -145,4 +148,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

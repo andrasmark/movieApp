@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         RegistrationPage.id: (context) => RegistrationPage(),
         MovieDetailsPage.id: (context) => MovieDetailsPage(
           movieID: ModalRoute.of(context)!.settings.arguments as int,
-        )
+        ),
       },
     );
   }

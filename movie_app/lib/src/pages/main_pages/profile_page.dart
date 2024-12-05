@@ -118,21 +118,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    "My Friends",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 5, // Replace with actual friends count
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Icon(Icons.account_circle),
-                          title: Text("Friend ${index + 1}"),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
