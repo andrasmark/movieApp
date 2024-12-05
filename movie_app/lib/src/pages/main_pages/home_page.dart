@@ -1,12 +1,15 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'package:movie_app/src/services/api.dart';
-
-import '../../../models/movie_model.dart';
-import '../../components/NavBar.dart';
 import 'movies_page.dart';
+
+import '../../components/NavBar.dart';
+import '../../services/firebase.dart';
+import '../../components/MovieCardWidget.dart';
+import '../../../models/movie_model.dart';
+import 'package:movie_app/src/services/api.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -73,116 +76,65 @@ class _HomePageState extends State<HomePage> {
               ),
               FutureBuilder<List<Movie>>(
                 future: upcomingMovies,
-                builder: (context, snaphot) {
-                  if (!snaphot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  final movies = snaphot.data!;
+                  final movies = snapshot.data!;
                   return CarouselSlider.builder(
                     itemCount: movies.length,
-                    itemBuilder: (context, index, moviesIndex) {
+                    itemBuilder: (context, index, realIndex) {
                       final movie = movies[index];
-                      return Container(
-                        width: 188,
-                        margin: EdgeInsets.symmetric(horizontal: 0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}"),
-                        ),
-                      );
+                      return MovieCardWidget(movie: movie); // Pass movie to updated widget
                     },
                     options: CarouselOptions(
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        aspectRatio: 1.4,
-                        autoPlayInterval: const Duration(seconds: 4)),
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 1.4,
+                      autoPlayInterval: const Duration(seconds: 4),
+                    ),
                   );
                 },
               ),
-              const Text(
-                'Trending',
-              ),
+              const Text('Trending'),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
+                margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: popularMovies,
-                  builder: (context, snaphot) {
-                    if (!snaphot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-                    final movies = snaphot.data!;
-
+                    final movies = snapshot.data!;
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: movies.length,
                       itemBuilder: (context, index) {
                         final movie = movies[index];
-                        return Container(
-                          width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
+                        return MovieCardWidget(movie: movie);
                       },
                     );
                   },
                 ),
               ),
-              const Text(
-                'Top rated',
-              ),
+              const Text('Top rated'),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
+                margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: topRatedMovies,
-                  builder: (context, snaphot) {
-                    if (!snaphot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-                    final movies = snaphot.data!;
+                    final movies = snapshot.data!;
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: movies.length,
                       itemBuilder: (context, index) {
                         final movie = movies[index];
-                        return Container(
-                          width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
+                        return MovieCardWidget(movie: movie);
                       },
                     );
                   },
