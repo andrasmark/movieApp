@@ -1,3 +1,5 @@
+// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/src/services/api.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
@@ -5,9 +7,9 @@ import 'package:movie_app/src/pages/main_pages/social_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../components/NavBar.dart';
+import '../../models/movie_model.dart';
 import '../../services/firebase.dart';
 import 'movies_page.dart';
-import '../../../models/movie_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,16 +87,13 @@ class _HomePageState extends State<HomePage> {
                     itemCount: movies.length,
                     itemBuilder: (context, index, moviesIndex) {
                       final movie = movies[index];
-                      return Container(
-                        width: 188,
-                        margin:EdgeInsets.symmetric(horizontal: 0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15)),
+                      return SizedBox(
+                        width: double.infinity,
+
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}"),
+                              "https://image.tmdb.org/t/p/original/${movie.backDropPath}"),
                         ),
                       );
                     },
@@ -110,12 +109,13 @@ class _HomePageState extends State<HomePage> {
                 'Trending',
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
+                margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: popularMovies,
                   builder: (context, snaphot) {
                     if (!snaphot.hasData) {
+                      // print(snaphot.hasData);
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                         final movie = movies[index];
                         return Container(
                           width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                 'Top rated',
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
+                margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: topRatedMovies,
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                         final movie = movies[index];
                         return Container(
                           width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),

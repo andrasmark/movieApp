@@ -10,6 +10,8 @@ import 'social_page.dart';
 class ProfilePage extends StatefulWidget {
   static String id = 'profile_page';
 
+  const ProfilePage({super.key});
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -18,7 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  int _selectedIndex = 3;
+  final int _selectedIndex = 3;
   Map<String, dynamic>? userDetails;
 
   @override
@@ -62,10 +64,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Profile"),
+        title: const Text("My Profile"),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               // Implement Edit Profile functionality
             },
@@ -73,32 +75,32 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: userDetails == null
-          ? Center(child: CircularProgressIndicator()) // Show loading spinner
+          ? const Center(child: CircularProgressIndicator()) // Show loading spinner
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
+                  const Center(
                     child: Icon(Icons.account_circle, size: 100),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     "Username: ${userDetails?['userName'] ?? 'N/A'}",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     "Bio: ${userDetails?['userBio'] ?? 'N/A'}",
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     "My Ratings",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
-                  Container(
+                  const SizedBox(height: 10),
+                  SizedBox(
                     height: 100,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -106,8 +108,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       itemBuilder: (context, index) {
                         return Container(
                           width: 80,
-                          margin: EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: const Column(
                             children: [
                               Placeholder(fallbackHeight: 60), // Movie poster
                               Text('Movie Title', textAlign: TextAlign.center),
@@ -117,8 +119,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     "My Friends",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -127,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       itemCount: 5, // Replace with actual friends count
                       itemBuilder: (context, index) {
                         return ListTile(
-                          leading: Icon(Icons.account_circle),
+                          leading: const Icon(Icons.account_circle),
                           title: Text("Friend ${index + 1}"),
                         );
                       },

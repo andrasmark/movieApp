@@ -6,6 +6,8 @@ import 'authentication/login_page.dart';
 class WelcomePage extends StatefulWidget {
   static String id = 'welcome_page';
 
+  const WelcomePage({super.key});
+
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
@@ -16,12 +18,12 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(
+            const SizedBox(
               height: 48.0,
             ),
             RoundedButton(

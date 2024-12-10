@@ -8,6 +8,8 @@ import '../../constants/constants.dart';
 class LoginPage extends StatefulWidget {
   static String id = 'login_page';
 
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -25,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,13 +35,13 @@ class _LoginPageState extends State<LoginPage> {
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 200.0,
                     child: Image.asset('images/logo.png'),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48.0,
               ),
               TextField(
@@ -51,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: kTextFieldDecoration.copyWith(
                     hintText: 'Enter your email',
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               TextField(
@@ -63,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration:
                     kTextFieldDecoration.copyWith(hintText: 'Enter password'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
@@ -76,10 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                   try {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
-                    if (user != null) {
-                      Navigator.pushReplacementNamed(context, HomePage.id);
-                    }
-                    setState(() {
+                    Navigator.pushReplacementNamed(context, HomePage.id);
+                                      setState(() {
                       showSpinner = false;
                     });
                   } catch (e) {
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
 
 class RoundedButton extends StatelessWidget {
   const RoundedButton(
-      {required this.colour, required this.title, required this.onPress});
+      {super.key, required this.colour, required this.title, required this.onPress});
 
   final Color colour;
   final String title;
@@ -106,7 +106,7 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
         color: colour,
         borderRadius: BorderRadius.circular(30.0),
@@ -120,7 +120,7 @@ class RoundedButton extends StatelessWidget {
           height: 42.0,
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
             ),
           ),

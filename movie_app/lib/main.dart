@@ -38,15 +38,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system, // Use system theme (light/dark)
-      home: LoginPage(),
+      home: const LoginPage(),
       routes: {
-        HomePage.id: (context) => HomePage(),
-        MoviesPage.id: (context) => MoviesPage(),
-        SocialPage.id: (context) => SocialPage(),
-        ProfilePage.id: (context) => ProfilePage(),
-        LoginPage.id: (context) => LoginPage(),
-        RegistrationPage.id: (context) => RegistrationPage(),
-        MovieDetailsPage.id: (context) => MovieDetailsPage()
+        HomePage.id: (context) => const HomePage(),
+        MoviesPage.id: (context) => const MoviesPage(),
+        SocialPage.id: (context) => const SocialPage(),
+        ProfilePage.id: (context) => const ProfilePage(),
+        LoginPage.id: (context) => const LoginPage(),
+        RegistrationPage.id: (context) => const RegistrationPage(),
+        MovieDetailsPage.id: (context) => const MovieDetailsPage()
       },
     );
   }

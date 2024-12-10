@@ -9,6 +9,8 @@ import 'login_page.dart';
 class RegistrationPage extends StatefulWidget {
   static String id = 'registration_page';
 
+  const RegistrationPage({super.key});
+
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
@@ -26,7 +28,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,13 +36,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 200.0,
                     child: Image.asset('images/logo.png'),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48.0,
               ),
               TextField(
@@ -53,7 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   hintText: 'Enter your email',
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               TextField(
@@ -66,7 +68,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   hintText: 'Enter your password',
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
@@ -83,10 +85,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       final newUser =
                           await _auth.createUserWithEmailAndPassword(
                               email: email, password: password);
-                      if (newUser != null) {
-                        Navigator.pushReplacementNamed(context, HomePage.id);
-                      }
-                      setState(() {
+                      Navigator.pushReplacementNamed(context, HomePage.id);
+                                          setState(() {
                         showSpinner = false;
                       });
                     } catch (e) {
