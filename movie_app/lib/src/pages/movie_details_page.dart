@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:movie_app/models/movie_details_model.dart';
+import 'package:movie_app/src/models/movie_details_model.dart';
 import 'package:movie_app/src/components/MovieCardWidget.dart';
-import 'package:movie_app/models/movie_recommendations_model.dart';
-import 'package:movie_app/models/movie_model.dart';
+import 'package:movie_app/src/models/movie_recommendations_model.dart';
+import 'package:movie_app/src/models/movie_model.dart';
 import '../services/api.dart';
 
 const String imageUrl = 'https://image.tmdb.org/t/p/w500';
@@ -44,11 +44,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
 
   Movie convertResultToMovie(Result result) {
     return Movie(
-      id: result.id,
-      title: result.title,
-      overview: result.overview,
-      backDropPath: result.backdropPath,
-      posterPath: result.posterPath,
+      id: result.id ?? 0,
+      title: result.title ?? 'NULL',
+      overview: result.overview ?? 'NULL',
+      backDropPath: result.backdropPath ?? 'NULL',
+      posterPath: result.posterPath ?? 'NULL',
     );
   }
 
@@ -138,15 +138,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                   SizedBox(
                     width: double.infinity,
                     child: CachedNetworkImage(
-                      imageUrl: movie.posterPath != null && movie.posterPath.isNotEmpty
-                          ? 'https://image.tmdb.org/t/p/w500${movie.posterPath}'
+                      imageUrl: movie.backdropPath != null && movie.backdropPath.isNotEmpty
+                          ? 'https://image.tmdb.org/t/p/w500${movie.backdropPath}'
                           : 'https://via.placeholder.com/150',
-                      height: 300, // Adjust the height based on your preference
                       fit: BoxFit.cover,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 25, left: 10, right: 10),
+                    padding: const EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -154,11 +153,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         Text(
                           movie.title,
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 15),
                         // Movie release year and genres
                         Row(
                           children: [
@@ -178,7 +176,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 40),
                         // Movie Description
                         Text(
                           movie.overview ?? 'No description available.',
@@ -187,7 +185,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 20),
 
                         // Cast section
                         FutureBuilder<List<dynamic>>(
@@ -203,17 +201,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Cast",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
+                                  Container(
+                                    child: const Text(
+                                      "Cast",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 10),
                                   SizedBox(
-                                    height: 250,
+                                    height: 220,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemCount: cast.length,
@@ -271,7 +271,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             return const Text("No cast data available.");
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: showRatingDialog,
                           child: const Text('RATE MOVIE'),
@@ -301,19 +301,23 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "More like this",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                            Container(
+                              margin: const EdgeInsets.only(left: 15.0),
+                              child: const Text(
+                                "More like this",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
+
                             const SizedBox(height: 10),
                             GridView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              padding: EdgeInsets.zero,
+                              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                               itemCount: recommendations.length,
                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
@@ -322,7 +326,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               ),
                               itemBuilder: (context, index) {
                                 final movie = movies[index];
-                                return MovieCardWidget(movie: movie);
+                                if(movie.id != 0 &&
+                                    movie.title != 'NULL' &&
+                                    movie.overview != 'NULL' &&
+                                    movie.posterPath != 'NULL' &&
+                                    movie.backDropPath != 'NULL') {
+                                  return MovieCardWidget(movie: movie);
+                                }
+                                return null;
                               },
                             ),
                           ],

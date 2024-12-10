@@ -8,7 +8,7 @@ import 'movies_page.dart';
 import '../../components/NavBar.dart';
 import '../../services/firebase.dart';
 import '../../components/MovieCardWidget.dart';
-import '../../../models/movie_model.dart';
+import '../../models/movie_model.dart';
 import 'package:movie_app/src/services/api.dart';
 
 class HomePage extends StatefulWidget {
