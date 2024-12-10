@@ -119,22 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "My Friends",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 5, // Replace with actual friends count
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: const Icon(Icons.account_circle),
-                          title: Text("Friend ${index + 1}"),
-                        );
-                      },
-                    ),
-                  ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

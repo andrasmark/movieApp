@@ -1,15 +1,16 @@
-// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
-
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/src/services/api.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:movie_app/src/services/api.dart';
 
+import '../../components/MovieCardWidget.dart';
 import '../../components/NavBar.dart';
 import '../../models/movie_model.dart';
 import '../../services/firebase.dart';
 import 'movies_page.dart';
+import 'package:movie_app/src/services/api.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,8 +32,8 @@ class _HomePageState extends State<HomePage> {
     upcomingMovies = Api().getUpcomingMovies();
     topRatedMovies = Api().getTopRatedMovies();
     popularMovies = Api().getPopularMovies();
-    
-    getIds();
+
+    //getIds();
     super.initState();
   }
 
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,38 +77,38 @@ class _HomePageState extends State<HomePage> {
               ),
               FutureBuilder<List<Movie>>(
                 future: upcomingMovies,
-                builder: (context, snaphot) {
-                  if (!snaphot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  final movies = snaphot.data!;
+                  final movies = snapshot.data!;
                   return CarouselSlider.builder(
                     itemCount: movies.length,
-                    itemBuilder: (context, index, moviesIndex) {
+                    itemBuilder: (context, index, realIndex) {
                       final movie = movies[index];
-                      return SizedBox(
-                        width: double.infinity,
-
+                      return Container(
+                        width: 188,
+                        margin:EdgeInsets.symmetric(horizontal: 0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15)),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.backDropPath}"),
+                              "https://image.tmdb.org/t/p/original/${movie.posterPath}"),
                         ),
                       );
                     },
                     options: CarouselOptions(
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        aspectRatio: 1.4,
-                        autoPlayInterval: const Duration(seconds: 4)),
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 1.4,
+                      autoPlayInterval: const Duration(seconds: 4),
+                    ),
                   );
                 },
               ),
-              const Text(
-                'Trending',
-              ),
+              const Text('Trending'),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
@@ -115,12 +116,11 @@ class _HomePageState extends State<HomePage> {
                   future: popularMovies,
                   builder: (context, snaphot) {
                     if (!snaphot.hasData) {
-                      // print(snaphot.hasData);
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
-                    final movies = snaphot.data!;
+                    final movies = snapshot.data!;
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: movies.length,
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                         final movie = movies[index];
                         return Container(
                           width: 150,
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),
@@ -147,21 +147,17 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              const Text(
-                'Top rated',
-              ),
+              const Text('Top rated'),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: topRatedMovies,
-                  builder: (context, snaphot) {
-                    if (!snaphot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-                    final movies = snaphot.data!;
+                    final movies = snapshot.data!;
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: movies.length,
@@ -169,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                         final movie = movies[index];
                         return Container(
                           width: 150,
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),
