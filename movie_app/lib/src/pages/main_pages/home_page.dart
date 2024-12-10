@@ -6,9 +6,9 @@ import 'package:movie_app/src/services/api.dart';
 
 import '../../components/MovieCardWidget.dart';
 import '../../components/NavBar.dart';
-import '../../models/movie_model.dart';
-import '../../services/firebase.dart';
 import 'movies_page.dart';
+
+import '../../models/movie_model.dart';
 import 'package:movie_app/src/services/api.dart';
 
 
@@ -86,18 +86,8 @@ class _HomePageState extends State<HomePage> {
                     itemCount: movies.length,
                     itemBuilder: (context, index, realIndex) {
                       final movie = movies[index];
-                      return Container(
-                        width: 188,
-                        margin:EdgeInsets.symmetric(horizontal: 0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}"),
-                        ),
-                      );
+                      return MovieCardWidget(
+                          movie: movie); // Pass movie to updated widget
                     },
                     options: CarouselOptions(
                       autoPlay: true,
@@ -114,11 +104,9 @@ class _HomePageState extends State<HomePage> {
                 height: 200,
                 child: FutureBuilder<List<Movie>>(
                   future: popularMovies,
-                  builder: (context, snaphot) {
-                    if (!snaphot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
                     }
                     final movies = snapshot.data!;
                     return ListView.builder(
@@ -126,22 +114,7 @@ class _HomePageState extends State<HomePage> {
                       itemCount: movies.length,
                       itemBuilder: (context, index) {
                         final movie = movies[index];
-                        return Container(
-                          width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
+                        return MovieCardWidget(movie: movie);
                       },
                     );
                   },
@@ -163,22 +136,7 @@ class _HomePageState extends State<HomePage> {
                       itemCount: movies.length,
                       itemBuilder: (context, index) {
                         final movie = movies[index];
-                        return Container(
-                          width: 150,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              "https://image.tmdb.org/t/p/original/${movie.posterPath}",
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
+                        return MovieCardWidget(movie: movie);
                       },
                     );
                   },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/src/components/MovieCardWidget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 import 'package:movie_app/src/models/movie_details_model.dart';
