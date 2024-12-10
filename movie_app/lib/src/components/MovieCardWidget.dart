@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:movie_app/src/models/movie_model.dart';
 import 'package:movie_app/src/pages/movie_details_page.dart';
+
 
 class MovieCardWidget extends StatelessWidget {
   final Movie movie;
@@ -25,7 +27,8 @@ class MovieCardWidget extends StatelessWidget {
           child: Image.network(
             'https://image.tmdb.org/t/p/w500${movie.posterPath}',
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error),
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return const Center(child: CircularProgressIndicator());
