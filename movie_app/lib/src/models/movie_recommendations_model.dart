@@ -37,16 +37,16 @@ class MovieRecommendationsModel {
 
 class Result {
   bool adult;
-  String backdropPath;
+  String? backdropPath;
   List<int> genreIds;
-  int id;
+  int? id;
   String originalLanguage;
   String originalTitle;
-  String overview;
+  String? overview;
   double popularity;
-  String posterPath;
+  String? posterPath;
   DateTime releaseDate;
-  String title;
+  String? title;
   bool video;
   double voteAverage;
   int voteCount;

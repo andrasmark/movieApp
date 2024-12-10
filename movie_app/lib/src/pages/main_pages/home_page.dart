@@ -6,8 +6,11 @@ import 'package:movie_app/src/services/api.dart';
 
 import '../../components/MovieCardWidget.dart';
 import '../../components/NavBar.dart';
-import '../../models/movie_model.dart';
 import 'movies_page.dart';
+
+import '../../models/movie_model.dart';
+import 'package:movie_app/src/services/api.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

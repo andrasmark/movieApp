@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../models/movie_model.dart';
-import '../pages/movie_details_page.dart'; // Update with the correct import path for MovieDetailsPage
+import 'package:movie_app/src/models/movie_model.dart';
+import 'package:movie_app/src/pages/movie_details_page.dart';
+
 
 class MovieCardWidget extends StatelessWidget {
   final Movie movie;
@@ -15,16 +16,16 @@ class MovieCardWidget extends StatelessWidget {
         // Navigate to movie details page via movieID
         Navigator.pushNamed(
           context,
-          MovieDetailsPage.id, // Ensure MovieDetailsPage.id is defined
-          arguments: movie.id, // Pass movie ID as an argument
+          MovieDetailsPage.id,
+          arguments: movie.id,
         );
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: AspectRatio(
-          aspectRatio: 2 / 3, // Adjust for poster dimensions
+          aspectRatio: 2 / 3,
           child: Image.network(
-            'https://image.tmdb.org/t/p/w500${movie.posterPath}', // Use the poster path from the API
+            'https://image.tmdb.org/t/p/w500${movie.posterPath}',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
                 const Icon(Icons.error),

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:movie_app/src/models/movie_model.dart';
+import 'package:movie_app/src/models/movie_details_model.dart';
+import 'package:movie_app/src/models/movie_recommendations_model.dart';
+
 import 'package:http/http.dart' as http;
 
-import '../models/movie_details_model.dart';
-import '../models/movie_model.dart';
-import '../models/movie_recommendations_model.dart';
+
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
 const baseUrl = 'https://api.themoviedb.org/3/';
