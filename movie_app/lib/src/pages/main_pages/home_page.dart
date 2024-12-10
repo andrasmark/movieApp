@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:flutter/material.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
-import 'movies_page.dart';
-
-import '../../components/NavBar.dart';
-import '../../services/firebase.dart';
-import '../../components/MovieCardWidget.dart';
-import '../../../models/movie_model.dart';
 import 'package:movie_app/src/services/api.dart';
+
+import '../../components/MovieCardWidget.dart';
+import '../../components/NavBar.dart';
+import '../../models/movie_model.dart';
+import 'movies_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,7 +83,8 @@ class _HomePageState extends State<HomePage> {
                     itemCount: movies.length,
                     itemBuilder: (context, index, realIndex) {
                       final movie = movies[index];
-                      return MovieCardWidget(movie: movie); // Pass movie to updated widget
+                      return MovieCardWidget(
+                          movie: movie); // Pass movie to updated widget
                     },
                     options: CarouselOptions(
                       autoPlay: true,

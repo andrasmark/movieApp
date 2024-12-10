@@ -1,18 +1,21 @@
-
 import 'dart:convert';
-import 'package:movie_app/models/movie_model.dart';
-import 'package:movie_app/models/movie_details_model.dart';
-import 'package:movie_app/models/movie_recommendations_model.dart';
+
 import 'package:http/http.dart' as http;
+
+import '../models/movie_details_model.dart';
+import '../models/movie_model.dart';
+import '../models/movie_recommendations_model.dart';
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
 const baseUrl = 'https://api.themoviedb.org/3/';
 
-class Api{
-
-  final upComingApiUrl = 'https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey';
-  final topRatedApiUrl = 'https://api.themoviedb.org/3/movie/top_rated?api_key=$apiKey';
-  final popularApiUrl = 'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey';
+class Api {
+  final upComingApiUrl =
+      'https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey';
+  final topRatedApiUrl =
+      'https://api.themoviedb.org/3/movie/top_rated?api_key=$apiKey';
+  final popularApiUrl =
+      'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey';
 
   Future<List<Movie>> getUpcomingMovies() async {
     final response = await http.get(Uri.parse(upComingApiUrl));
@@ -80,5 +83,4 @@ class Api{
     }
     throw Exception('Failed to load  recommended movies');
   }
-
 }

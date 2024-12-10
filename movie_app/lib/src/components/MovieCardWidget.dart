@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../models/movie_model.dart';
+
+import '../models/movie_model.dart';
 import '../pages/movie_details_page.dart'; // Update with the correct import path for MovieDetailsPage
 
 class MovieCardWidget extends StatelessWidget {
@@ -25,7 +26,8 @@ class MovieCardWidget extends StatelessWidget {
           child: Image.network(
             'https://image.tmdb.org/t/p/w500${movie.posterPath}', // Use the poster path from the API
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.error),
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return const Center(child: CircularProgressIndicator());

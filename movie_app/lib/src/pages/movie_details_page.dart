@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-import 'package:movie_app/models/movie_details_model.dart';
+import 'package:flutter/material.dart';
 import 'package:movie_app/src/components/MovieCardWidget.dart';
-import 'package:movie_app/models/movie_recommendations_model.dart';
-import 'package:movie_app/models/movie_model.dart';
+
+import '../models/movie_details_model.dart';
+import '../models/movie_model.dart';
+import '../models/movie_recommendations_model.dart';
 import '../services/api.dart';
 
 const String imageUrl = 'https://image.tmdb.org/t/p/w500';
@@ -60,7 +59,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          isAddedToWatchlist ? 'Added to Watchlist!' : 'Removed from Watchlist!',
+          isAddedToWatchlist
+              ? 'Added to Watchlist!'
+              : 'Removed from Watchlist!',
         ),
       ),
     );
@@ -131,22 +132,25 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               final movie = snapshot.data!;
-              String genresText = movie.genres.map((genre) => genre.name).join(', ');
+              String genresText =
+                  movie.genres.map((genre) => genre.name).join(', ');
 
               return Column(
                 children: [
                   SizedBox(
                     width: double.infinity,
                     child: CachedNetworkImage(
-                      imageUrl: movie.posterPath != null && movie.posterPath.isNotEmpty
-                          ? 'https://image.tmdb.org/t/p/w500${movie.posterPath}'
+                      imageUrl: movie.backdropPath != null &&
+                              movie.backdropPath.isNotEmpty
+                          ? 'https://image.tmdb.org/t/p/w500${movie.backdropPath}'
                           : 'https://via.placeholder.com/150',
-                      height: 300, // Adjust the height based on your preference
+                      //height: 300, // Adjust the height based on your preference
                       fit: BoxFit.cover,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 25, left: 10, right: 10),
+                    padding:
+                        const EdgeInsets.only(top: 25, left: 10, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -193,8 +197,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         FutureBuilder<List<dynamic>>(
                           future: movieCast,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
                               return const Text('Failed to load cast.');
                             } else if (snapshot.hasData) {
@@ -219,16 +225,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                                       itemCount: cast.length,
                                       itemBuilder: (context, index) {
                                         final actor = cast[index];
-                                        final profilePath = actor['profile_path'];
+                                        final profilePath =
+                                            actor['profile_path'];
 
                                         return Container(
                                           width: 120,
-                                          margin: const EdgeInsets.only(right: 10),
+                                          margin:
+                                              const EdgeInsets.only(right: 10),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               ClipRRect(
-                                                borderRadius: BorderRadius.circular(8.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
                                                 child: CachedNetworkImage(
                                                   imageUrl: profilePath != null
                                                       ? 'https://image.tmdb.org/t/p/w500$profilePath'
@@ -280,7 +290,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         ElevatedButton(
                           onPressed: toggleWatchlist,
                           child: Text(
-                            isAddedToWatchlist ? 'ADDED TO WATCHLIST' : 'ADD TO WATCHLIST',
+                            isAddedToWatchlist
+                                ? 'ADDED TO WATCHLIST'
+                                : 'ADD TO WATCHLIST',
                           ),
                         ),
                       ],
@@ -295,7 +307,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (snapshot.hasData) {
                         final recommendations = snapshot.data!.results;
-                        final movies = recommendations.map((result) => convertResultToMovie(result)).toList();
+                        final movies = recommendations
+                            .map((result) => convertResultToMovie(result))
+                            .toList();
                         if (movies.isEmpty) return const SizedBox();
 
                         return Column(
@@ -315,7 +329,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
                               itemCount: recommendations.length,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
                                 mainAxisSpacing: 15,
                                 childAspectRatio: 2 / 3,
@@ -331,7 +346,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                       return const Text("No recommendations available.");
                     },
                   ),
-
                 ],
               );
             }
