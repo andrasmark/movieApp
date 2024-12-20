@@ -55,7 +55,7 @@ class Api{
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjhiNmM4NGE3ODRlNmU2ZjdiMjg5ODE2ZDBlZjE1YSIsIm5iZiI6MTcyOTc1NDM1Ni40MjEsInN1YiI6IjY3MTlmNGY0ZTgzM2Q5MmVmMDVmZDJjNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Y9ZKHGPyHqQkfvpzLE_q5WfJSkY6Iu3ntMxpgwzys08"
     });
     if(response.statusCode == 200){
-      log("Success");
+      log("Success getSearchResult");
       final List<dynamic> data = json.decode(response.body)['results'];
       List<Movie> movies = data.map((movie) => Movie.fromMap(movie)).toList();
       return movies;
