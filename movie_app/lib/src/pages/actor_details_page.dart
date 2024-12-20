@@ -55,13 +55,14 @@ class _ActorDetailsPageState extends State<ActorDetailsPage> {
                 children: [
                   // Actor Profile Image
                   Center(
-                    child: CircleAvatar(
-                      radius: 70,
-                      backgroundImage: actor.profilePath.isNotEmpty
-                          ? NetworkImage(
-                          'https://image.tmdb.org/t/p/w500${actor.profilePath}')
-                          : const NetworkImage(
-                          'https://via.placeholder.com/150'),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image(
+                        image: actor.profilePath.isNotEmpty
+                            ? NetworkImage('https://image.tmdb.org/t/p/w500${actor.profilePath}')
+                            : const NetworkImage('https://via.placeholder.com/150'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),

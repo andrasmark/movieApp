@@ -14,15 +14,16 @@ class Movie{
     required this.posterPath
   });
 
-  factory Movie.fromMap(Map<String, dynamic> map){
+  factory Movie.fromMap(Map<String, dynamic> map) {
     return Movie(
-      id: map['id'],
-      title: map['title'],
-      backDropPath: map['backdrop_path'],
-      posterPath: map['poster_path'],
-      overview: map['overview']
+      id: map['id'] ?? 0,
+      title: map['title'] ?? 'Unknown Title',
+      overview: map['overview'] ?? 'No overview available',
+      backDropPath: map['backdrop_path'] ?? '',
+      posterPath: map['poster_path'] ?? '',
     );
   }
+
 
   Map<String, dynamic> toMap(){
     return {

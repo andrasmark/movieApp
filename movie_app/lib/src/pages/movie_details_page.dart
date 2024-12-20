@@ -2,13 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:movie_app/src/models/movie_model.dart';
+
 import 'package:movie_app/src/models/movie_details_model.dart';
 import 'package:movie_app/src/models/movie_recommendations_model.dart';
+import 'package:movie_app/src/models/movie_model.dart';
 import 'package:movie_app/src/models/actor_model.dart';
+
 
 import 'package:movie_app/src/components/MovieCardWidget.dart';
 import 'package:movie_app/src/components/ActorCardWidget.dart';
+
 
 import '../services/api.dart';
 
@@ -44,6 +47,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
     movieDetails = api.getMovieDetails(widget.movieID);
     movieRecommendationModel = api.getMovieRecommendations(widget.movieID);
     movieCast = api.getMovieCast(widget.movieID);
+    print("venom movie id ${widget.movieID}");
   }
 
   Movie convertResultToMovie(Result result) {
@@ -64,7 +68,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          isAddedToWatchlist ? 'Added to Watchlist!' : 'Removed from Watchlist!',
+          isAddedToWatchlist
+              ? 'Added to Watchlist!'
+              : 'Removed from Watchlist!',
         ),
       ),
     );
@@ -122,6 +128,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Container(
@@ -151,7 +158,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 15, left: 10, right: 10),
+                      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -164,22 +171,30 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             ),
                           ),
                           // Movie release year and genres
-                          Row(
+                          Column(
                             children: [
-                              Text(
-                                movie.releaseDate.year.toString(),
-                                style: const TextStyle(
-                                  color: Colors.grey,
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  movie.releaseDate.year.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.lightBlue,
+                                    fontSize: 17,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 30),
-                              Text(
-                                genresText,
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  maxLines: 2,
+                                  genresText,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 17,
+                                  ),
                                 ),
                               ),
+                              const SizedBox(height: 10),
                             ],
                           ),
                           const SizedBox(height: 40),

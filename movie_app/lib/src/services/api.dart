@@ -1,20 +1,25 @@
 import 'dart:convert';
-import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
 import 'package:movie_app/src/models/movie_model.dart';
 import 'package:movie_app/src/models/movie_details_model.dart';
 import 'package:movie_app/src/models/movie_recommendations_model.dart';
 import 'package:movie_app/src/models/actor_details_model.dart';
 
+
 import 'package:http/http.dart' as http;
+
+
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
 const baseUrl = 'https://api.themoviedb.org/3/';
 
-class Api{
-
-  final upComingApiUrl = 'https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey';
-  final topRatedApiUrl = 'https://api.themoviedb.org/3/movie/top_rated?api_key=$apiKey';
-  final popularApiUrl = 'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey';
+class Api {
+  final upComingApiUrl =
+      'https://api.themoviedb.org/3/movie/upcoming?api_key=$apiKey';
+  final topRatedApiUrl =
+      'https://api.themoviedb.org/3/movie/top_rated?api_key=$apiKey';
+  final popularApiUrl =
+      'https://api.themoviedb.org/3/movie/popular?api_key=$apiKey';
 
   Future<List<Movie>> getUpcomingMovies() async {
     final response = await http.get(Uri.parse(upComingApiUrl));
@@ -105,8 +110,22 @@ class Api{
       final json = jsonDecode(response.body);
       print('API response: $json');
       final castList = json['cast'] as List;
-      return castList.map((cast) => Movie.fromMap(cast)).toList();
+      return castList.map((cast) {
+        try {
+          return Movie.fromMap(cast);
+        } catch (e) {
+          print('Error parsing movie: $e');
+          return null;
+        }
+      }).where((movie){
+        return movie != null &&
+            movie.title.isNotEmpty &&
+            movie.posterPath.isNotEmpty &&
+            movie.backDropPath.isNotEmpty &&
+            movie.overview.isNotEmpty;
+      }).toList().cast<Movie>();
     } else {
+      print('Error: ${response.body}');
       throw Exception('Failed to load recent projects');
     }
   }
