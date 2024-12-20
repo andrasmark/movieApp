@@ -17,7 +17,7 @@ class ActorPage extends StatefulWidget {
 }
 
 class _ActorPageState extends State<ActorPage> {
-  final int _selectedIndex = 1; // Például: kijelölés a NavBar-ban
+  final int _selectedIndex = 1;
 
   void _onNavBarItemTapped(int index) {
     setState(() {

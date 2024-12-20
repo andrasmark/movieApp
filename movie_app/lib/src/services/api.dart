@@ -1,8 +1,10 @@
-
 import 'dart:convert';
+import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
 import 'package:movie_app/src/models/movie_model.dart';
 import 'package:movie_app/src/models/movie_details_model.dart';
 import 'package:movie_app/src/models/movie_recommendations_model.dart';
+import 'package:movie_app/src/models/actor_details_model.dart';
+
 import 'package:http/http.dart' as http;
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
@@ -79,6 +81,34 @@ class Api{
       return MovieRecommendationsModel.fromJson(jsonDecode(response.body));
     }
     throw Exception('Failed to load  recommended movies');
+  }
+
+  Future<ActorDetailsModel> getActorDetails(int actorID) async {
+    final response = await http.get(
+      Uri.parse('${baseUrl}person/$actorID?api_key=$apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return ActorDetailsModel.fromJson(json);
+    } else {
+      throw Exception('Failed to load actor details');
+    }
+  }
+
+  Future<List<Movie>> getActorRecentProjects(int actorID) async {
+    final response = await http.get(
+      Uri.parse('${baseUrl}person/$actorID/movie_credits?api_key=$apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      print('API response: $json');
+      final castList = json['cast'] as List;
+      return castList.map((cast) => Movie.fromMap(cast)).toList();
+    } else {
+      throw Exception('Failed to load recent projects');
+    }
   }
 
 }
