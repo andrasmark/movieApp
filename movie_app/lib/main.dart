@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'package:movie_app/src/pages/authentication/login_page.dart';
 import 'package:movie_app/src/pages/authentication/registration_page.dart';
 import 'package:movie_app/src/pages/main_pages/home_page.dart';
@@ -7,6 +8,7 @@ import 'package:movie_app/src/pages/main_pages/movies_page.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
 import 'package:movie_app/src/pages/movie_details_page.dart';
+import 'package:movie_app/src/pages/actor_details_page.dart';
 
 import 'firebase_options.dart';
 
@@ -48,6 +50,9 @@ class MyApp extends StatelessWidget {
         RegistrationPage.id: (context) => RegistrationPage(),
         MovieDetailsPage.id: (context) => MovieDetailsPage(
           movieID: ModalRoute.of(context)!.settings.arguments as int,
+        ),
+        ActorDetailsPage.id: (context) => ActorDetailsPage(
+          actorID: ModalRoute.of(context)!.settings.arguments as int,
         ),
       },
     );
