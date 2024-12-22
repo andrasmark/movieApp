@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/src/components/MovieCardWidget.dart';
-
-
 import 'package:movie_app/src/models/movie_details_model.dart';
-import 'package:movie_app/src/components/MovieCardWidget.dart';
-import 'package:movie_app/src/models/movie_recommendations_model.dart';
 import 'package:movie_app/src/models/movie_model.dart';
+
+import '../models/movie_recommendations_model.dart';
 import '../services/api.dart';
 
 const String imageUrl = 'https://image.tmdb.org/t/p/w500';
@@ -25,10 +25,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   Api api = Api();
 
   late Future<MovieDetailsModel> movieDetails;
-  late Future<MovieRecommendationsModel> movieRecommendationModel;
   late Future<List<dynamic>> movieCast;
+  late Future<MovieRecommendationsModel> movieRecommendationModel;
 
+  final TextEditingController ratingController = TextEditingController();
+
+  final user = FirebaseAuth.instance.currentUser!;
   double userRating = 0.0;
+
   bool isAddedToWatchlist = false;
 
   @override
@@ -69,40 +73,79 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
     );
   }
 
-  void showRatingDialog() {
-    double tempRating = userRating;
+  Future<void> rateMovie(double rating) async {
+    final movieId = widget.movieID.toString();
+    final movieRef =
+        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    final userRef =
+        FirebaseFirestore.instance.collection('users').doc(user.uid);
 
+    // Update user's ratedMovies
+    await userRef.update({
+      'ratedMovies.$movieId': rating,
+    });
+
+    // Update movie's ratings and calculate new average
+    final movieDoc = await movieRef.get();
+    if (movieDoc.exists) {
+      final ratings = Map<String, dynamic>.from(movieDoc['ratings'] ?? {});
+      ratings[user.uid] = rating;
+
+      final averageRating = ratings.values.fold<double>(
+            0.0,
+            (sum, r) => sum + (r as double),
+          ) /
+          ratings.length;
+
+      await movieRef.update({
+        'ratings': ratings,
+        'averageRating': averageRating,
+      });
+    } else {
+      await movieRef.set({
+        'ratings': {user.uid: rating},
+        'averageRating': rating,
+      });
+    }
+
+    setState(() {
+      userRating = rating;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Rating submitted!')),
+    );
+  }
+
+  void showRatingDialog() {
     showDialog(
       context: context,
       builder: (context) {
+        double tempRating = userRating;
         return AlertDialog(
           title: const Text('Rate this Movie'),
           content: StatefulBuilder(
             builder: (context, setState) {
               return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return IconButton(
-                    icon: Icon(
-                      index < tempRating ? Icons.star : Icons.star_border,
-                      color: Colors.amber,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        tempRating = index + 1.0;
-                      });
-                    },
-                  );
-                }),
-              );
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(5, (index) {
+                    return IconButton(
+                      icon: Icon(
+                        index < tempRating ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          tempRating = index + 1.0;
+                        });
+                      },
+                    );
+                  }));
             },
           ),
           actions: [
             TextButton(
               onPressed: () {
-                setState(() {
-                  userRating = tempRating;
-                });
+                rateMovie(tempRating);
                 Navigator.of(context).pop();
               },
               child: const Text('Submit'),
@@ -142,14 +185,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                   SizedBox(
                     width: double.infinity,
                     child: CachedNetworkImage(
-                      imageUrl: movie.backdropPath != null && movie.backdropPath.isNotEmpty
+                      imageUrl: movie.backdropPath != null &&
+                              movie.backdropPath.isNotEmpty
                           ? 'https://image.tmdb.org/t/p/w500${movie.backdropPath}'
                           : 'https://via.placeholder.com/150',
                       fit: BoxFit.cover,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 15, left: 10, right: 10),
+                    padding:
+                        const EdgeInsets.only(top: 15, left: 10, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -326,12 +371,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                                 ),
                               ),
                             ),
-
                             const SizedBox(height: 10),
                             GridView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                              padding:
+                                  EdgeInsets.only(top: 10, left: 10, right: 10),
                               itemCount: recommendations.length,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
@@ -341,7 +386,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               ),
                               itemBuilder: (context, index) {
                                 final movie = movies[index];
-                                if(movie.id != 0 &&
+                                if (movie.id != 0 &&
                                     movie.title != 'NULL' &&
                                     movie.overview != 'NULL' &&
                                     movie.posterPath != 'NULL' &&

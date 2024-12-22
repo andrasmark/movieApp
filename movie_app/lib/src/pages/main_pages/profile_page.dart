@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/NavBar.dart';
+import '../../components/rated_movie_card_widget.dart';
+import '../../models/movie_details_model.dart';
+import '../../services/api.dart';
 import 'home_page.dart';
 import 'movies_page.dart';
 import 'social_page.dart';
@@ -21,10 +24,12 @@ class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 3;
   Map<String, dynamic>? userDetails;
 
+  List<MovieDetailsModel> ratedMoviesList = [];
+
   @override
   void initState() {
     super.initState();
-    fetchUserDetails(); // Fetch user details on initialization
+    fetchUserDetails();
   }
 
   void _onNavBarItemTapped(int index) {
@@ -46,12 +51,35 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> fetchUserDetails() async {
     try {
       final user = _auth.currentUser;
+
       if (user != null) {
         final snapshot =
             await _firestore.collection('users').doc(user.uid).get();
-        setState(() {
-          userDetails = snapshot.data();
-        });
+
+        if (snapshot.exists) {
+          setState(() {
+            userDetails = snapshot.data();
+
+            // Initialize ratedMoviesList with the movies fetched from Firestore
+            final ratedMoviesMap = snapshot['ratedMovies'] ?? {};
+            ratedMoviesList = [];
+
+            for (String movieId in ratedMoviesMap.keys) {
+              // Fetch the movie details and add it to the list
+              Api().getMovieDetails(int.parse(movieId)).then((movieDetail) {
+                setState(() {
+                  ratedMoviesList.add(movieDetail);
+                });
+              }).catchError((e) {
+                print('Error fetching movie details: $e');
+              });
+            }
+          });
+        } else {
+          print('User document does not exist in Firestore.');
+        }
+      } else {
+        print('No user is authenticated.');
       }
     } catch (e) {
       print('Error fetching user details: $e');
@@ -73,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: userDetails == null
-          ? Center(child: CircularProgressIndicator()) // Show loading spinner
+          ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -102,22 +130,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 100,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 10, // Replace with actual data count
+                      itemCount: ratedMoviesList.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          width: 80,
-                          margin: EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(
-                            children: [
-                              Placeholder(fallbackHeight: 60), // Movie poster
-                              Text('Movie Title', textAlign: TextAlign.center),
-                            ],
-                          ),
-                        );
+                        final movie = ratedMoviesList[index];
+                        return RatedMovieCardWidget(movie: movie);
                       },
                     ),
-                  ),
-                  SizedBox(height: 20),
+                  )
                 ],
               ),
             ),
