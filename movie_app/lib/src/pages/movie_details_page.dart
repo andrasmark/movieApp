@@ -27,6 +27,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   late Future<MovieDetailsModel> movieDetails;
   late Future<List<dynamic>> movieCast;
   late Future<MovieRecommendationsModel> movieRecommendationModel;
+  late Future<double> averageRatingFuture;
+  late Future<Map<String, dynamic>> ratingsFuture;
 
   final TextEditingController ratingController = TextEditingController();
 
@@ -39,12 +41,15 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   void initState() {
     super.initState();
     fetchInitialData();
+    checkIfInWatchlist();
   }
 
   fetchInitialData() {
     movieDetails = api.getMovieDetails(widget.movieID);
     movieRecommendationModel = api.getMovieRecommendations(widget.movieID);
     movieCast = api.getMovieCast(widget.movieID);
+    averageRatingFuture = fetchAverageRating();
+    ratingsFuture = fetchRatingsAndUsers();
   }
 
   Movie convertResultToMovie(Result result) {
@@ -57,20 +62,99 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
     );
   }
 
-  void toggleWatchlist() {
-    setState(() {
-      isAddedToWatchlist = !isAddedToWatchlist;
-    });
+  Future<void> checkIfInWatchlist() async {
+    try {
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userDoc = await userRef.get();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isAddedToWatchlist
-              ? 'Added to Watchlist!'
-              : 'Removed from Watchlist!',
+      if (userDoc.exists) {
+        final watchlist = List<int>.from(userDoc['watchlist'] ?? []);
+        setState(() {
+          isAddedToWatchlist = watchlist.contains(widget.movieID);
+        });
+      }
+    } catch (e) {
+      print('Error checking watchlist: $e');
+    }
+  }
+
+  void toggleWatchlist() async {
+    try {
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final movieId = widget.movieID;
+
+      if (isAddedToWatchlist) {
+        await userRef.update({
+          'watchlist': FieldValue.arrayRemove([movieId]),
+        });
+      } else {
+        await userRef.update({
+          'watchlist': FieldValue.arrayUnion([movieId]),
+        });
+      }
+
+      setState(() {
+        isAddedToWatchlist = !isAddedToWatchlist;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isAddedToWatchlist
+                ? 'Added to Watchlist!'
+                : 'Removed from Watchlist!',
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to update watchlist. Please try again.'),
+        ),
+      );
+      print('Error updating watchlist: $e');
+    }
+  }
+
+  //For the averageRating
+  Future<double> fetchAverageRating() async {
+    final movieId = widget.movieID.toString();
+    final movieRef =
+        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    final movieDoc = await movieRef.get();
+
+    if (movieDoc.exists && movieDoc.data()!.containsKey('averageRating')) {
+      return movieDoc['averageRating'] as double;
+    }
+    return 0.0;
+  }
+
+  //For the list of users who have rated
+  Future<Map<String, dynamic>> fetchRatingsAndUsers() async {
+    final movieId = widget.movieID.toString();
+    final movieRef =
+        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    final movieDoc = await movieRef.get();
+
+    if (movieDoc.exists) {
+      final ratings = Map<String, dynamic>.from(movieDoc['ratings'] ?? {});
+      final Map<String, String> userNames = {};
+
+      for (final userId in ratings.keys) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+        userNames[userId] =
+            userDoc.exists ? userDoc['userName'] : 'Unknown User';
+      }
+
+      return ratings
+          .map((key, value) => MapEntry(userNames[key] ?? key, value));
+    }
+    return {};
   }
 
   Future<void> rateMovie(double rating) async {
@@ -324,6 +408,128 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               );
                             }
                             return const Text("No cast data available.");
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        // Average Rating
+                        FutureBuilder<double>(
+                          future: averageRatingFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text(
+                                'Failed to load average rating',
+                                style: TextStyle(color: Colors.grey),
+                              );
+                            } else {
+                              final averageRating = snapshot.data!;
+                              if (averageRating > 0) {
+                                return Text(
+                                  'Average Rating: ${averageRating.toStringAsFixed(1)} / 5',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              } else {
+                                return Text(
+                                  'No one rated this movie yet',
+                                  style: const TextStyle(
+                                      fontSize: 16, color: Colors.grey),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        FutureBuilder<Map<String, dynamic>>(
+                          future: ratingsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text(
+                                'Failed to load ratings',
+                                style: TextStyle(color: Colors.grey),
+                              );
+                            } else if (snapshot.hasData &&
+                                snapshot.data!.isNotEmpty) {
+                              final ratings = snapshot.data!;
+                              return Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.black26,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                height: 120,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: ratings.entries.map((entry) {
+                                      final userId = entry.key;
+                                      final userRating = entry.value as double;
+
+                                      return Container(
+                                        width: 180,
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black45,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.account_circle,
+                                              size: 40,
+                                              color: Colors.white70,
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              userId,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children:
+                                                  List.generate(5, (index) {
+                                                return Icon(
+                                                  index < userRating
+                                                      ? Icons.star
+                                                      : Icons.star_border,
+                                                  color: Colors.amber,
+                                                  size: 18,
+                                                );
+                                              }),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              );
+                            }
+                            return const Text(
+                              'No ratings available.',
+                              style: TextStyle(color: Colors.grey),
+                            );
                           },
                         ),
                         const SizedBox(height: 10),

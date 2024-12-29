@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic>? userDetails;
 
   List<MovieDetailsModel> ratedMoviesList = [];
+  List<MovieDetailsModel> watchlist = [];
 
   @override
   void initState() {
@@ -72,6 +73,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 });
               }).catchError((e) {
                 print('Error fetching movie details: $e');
+              });
+            }
+
+            final watchlistMovieIds =
+                List<int>.from(snapshot['watchlist'] ?? []);
+            watchlist = [];
+            for (int movieId in watchlistMovieIds) {
+              Api().getMovieDetails(movieId).then((movieDetail) {
+                setState(() {
+                  watchlist.add(movieDetail);
+                });
+              }).catchError((e) {
+                print('Error fetching watchlist movie details: $e');
               });
             }
           });
@@ -127,7 +141,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 10),
                   Container(
-                    height: 100,
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    height: 200,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: ratedMoviesList.length,
@@ -136,7 +151,25 @@ class _ProfilePageState extends State<ProfilePage> {
                         return RatedMovieCardWidget(movie: movie);
                       },
                     ),
-                  )
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "My Watchlist",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: watchlist.length,
+                      itemBuilder: (context, index) {
+                        final movie = watchlist[index];
+                        return RatedMovieCardWidget(movie: movie);
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
