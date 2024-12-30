@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:movie_app/src/pages/authentication/registration_page.dart';
 import 'package:movie_app/src/pages/main_pages/home_page.dart';
 
 import '../../constants/constants.dart';
@@ -83,10 +84,48 @@ class _LoginPageState extends State<LoginPage> {
                       showSpinner = false;
                     });
                   } catch (e) {
+                    setState(() {
+                      showSpinner = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Invalid email or password'),
+                      ),
+                    );
                     print(e);
                   }
                 },
               ),
+              SizedBox(
+                height: 24.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Don\'t have an account?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, RegistrationPage.id);
+                    },
+                    child: Text(
+                      'Register now!',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

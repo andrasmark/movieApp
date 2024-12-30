@@ -58,32 +58,37 @@ class _ProfilePageState extends State<ProfilePage> {
             await _firestore.collection('users').doc(user.uid).get();
 
         if (snapshot.exists) {
+          final data = snapshot.data() ?? {};
           setState(() {
-            userDetails = snapshot.data();
+            userDetails = data;
 
-            // Initialize ratedMoviesList with the movies fetched from Firestore
-            final ratedMoviesMap = snapshot['ratedMovies'] ?? {};
+            // Handle rated movies
+            final ratedMoviesMap = data['ratedMovies'] ?? {};
             ratedMoviesList = [];
-
             for (String movieId in ratedMoviesMap.keys) {
-              // Fetch the movie details and add it to the list
-              Api().getMovieDetails(int.parse(movieId)).then((movieDetail) {
-                setState(() {
-                  ratedMoviesList.add(movieDetail);
-                });
+              Api()
+                  .getMovieDetails(int.tryParse(movieId) ?? 0)
+                  .then((movieDetail) {
+                if (movieDetail != null) {
+                  setState(() {
+                    ratedMoviesList.add(movieDetail);
+                  });
+                }
               }).catchError((e) {
-                print('Error fetching movie details: $e');
+                print('Error fetching rated movie details: $e');
               });
             }
 
-            final watchlistMovieIds =
-                List<int>.from(snapshot['watchlist'] ?? []);
+            // Handle watchlist
+            final watchlistMovieIds = List<int>.from(data['watchlist'] ?? []);
             watchlist = [];
             for (int movieId in watchlistMovieIds) {
               Api().getMovieDetails(movieId).then((movieDetail) {
-                setState(() {
-                  watchlist.add(movieDetail);
-                });
+                if (movieDetail != null) {
+                  setState(() {
+                    watchlist.add(movieDetail);
+                  });
+                }
               }).catchError((e) {
                 print('Error fetching watchlist movie details: $e');
               });
@@ -140,36 +145,46 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: ratedMoviesList.length,
-                      itemBuilder: (context, index) {
-                        final movie = ratedMoviesList[index];
-                        return RatedMovieCardWidget(movie: movie);
-                      },
-                    ),
-                  ),
+                  ratedMoviesList.isEmpty
+                      ? Text(
+                          "No rated movies yet.",
+                          style: TextStyle(fontSize: 16),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: ratedMoviesList.length,
+                            itemBuilder: (context, index) {
+                              final movie = ratedMoviesList[index];
+                              return RatedMovieCardWidget(movie: movie);
+                            },
+                          ),
+                        ),
                   SizedBox(height: 10),
                   Text(
                     "My Watchlist",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: watchlist.length,
-                      itemBuilder: (context, index) {
-                        final movie = watchlist[index];
-                        return RatedMovieCardWidget(movie: movie);
-                      },
-                    ),
-                  ),
+                  watchlist.isEmpty
+                      ? Text(
+                          "No movies in the watchlist yet.",
+                          style: TextStyle(fontSize: 16),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: watchlist.length,
+                            itemBuilder: (context, index) {
+                              final movie = watchlist[index];
+                              return RatedMovieCardWidget(movie: movie);
+                            },
+                          ),
+                        ),
                 ],
               ),
             ),

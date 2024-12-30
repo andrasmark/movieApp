@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -22,7 +23,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
@@ -83,16 +84,69 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       final newUser =
                           await _auth.createUserWithEmailAndPassword(
                               email: email, password: password);
-                      if (newUser != null) {
+                      if (newUser.user != null) {
+                        // Extract the username from the email
+                        String username = email.split('@')[0];
+
+                        // Add the user to the Firestore "users" collection
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(newUser.user!.uid)
+                            .set({
+                          'userName': username,
+                          'userBio': "User bio",
+                          'friends': [], // Initialize empty friends list
+                          'ratedMovies': {},
+                          'watchlist': [] // Initialize empty rated movies map
+                        });
+
                         Navigator.pushReplacementNamed(context, HomePage.id);
                       }
+
                       setState(() {
                         showSpinner = false;
                       });
                     } catch (e) {
+                      setState(() {
+                        showSpinner = false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Invalid email or password'),
+                        ),
+                      );
                       print(e);
                     }
                   }),
+              SizedBox(
+                height: 24.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, LoginPage.id);
+                    },
+                    child: Text(
+                      'Try to log in!',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -100,43 +154,3 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 }
-
-// class RegistrationPage extends StatelessWidget {
-//   static String id = 'registration_page';
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Registration')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Icon(Icons.account_circle, size: 100),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Username'),
-//             ),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Email'),
-//             ),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Password'),
-//               obscureText: true,
-//             ),
-//             TextField(
-//               decoration: InputDecoration(labelText: 'Confirm Password'),
-//               obscureText: true,
-//             ),
-//             SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//               child: Text('Sign up'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -14,13 +14,17 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      //backgroundColor: Colors.blueAccent,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Text(
+              "Welcome to movie HUB!",
+              style: TextStyle(),
+            ),
             SizedBox(
               height: 48.0,
             ),

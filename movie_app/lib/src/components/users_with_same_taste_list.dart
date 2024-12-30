@@ -3,31 +3,28 @@ import 'package:flutter/material.dart';
 import '../pages/friend_page.dart';
 import '../services/firebase.dart';
 
-class FriendsList extends StatelessWidget {
+class UsersWithSameTasteList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>?>>(
-      future: fetchFriends(),
+      future: fetchUsersWithSameTaste(),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No friends found'));
+          return const Center(child: Text('No recommended friends found'));
         }
 
-        final friends = snapshot.data!;
+        final recommendedFriends = snapshot.data!;
         return ListView.builder(
-          itemCount: friends.length,
+          itemCount: recommendedFriends.length,
           itemBuilder: (context, index) {
-            final friend = friends[index];
+            final friend = recommendedFriends[index];
             final friendId = friend?['uid'];
             return ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text(
-                friend?['userName'] ?? 'Unknown',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
+              leading: const Icon(Icons.account_circle),
+              title: Text(friend?['userName'] ?? 'Unknown'),
               subtitle: Text(friend?['userBio'] ?? ''),
               onTap: () {
                 if (friendId != null) {
