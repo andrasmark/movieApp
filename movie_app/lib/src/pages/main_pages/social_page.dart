@@ -41,43 +41,45 @@ class _SocialPageState extends State<SocialPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Social')),
-      body: Column(
-        children: [
-          const Text(
-            "My Friends",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Text(
+              "My Friends",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          // Friend list placeholder
-          Container(
-            height: 200,
-            child: FriendsList(),
-          ),
-          const Text(
-            "Recommended Friends",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            // Friend list placeholder
+            Container(
+              height: 200,
+              child: FriendsList(),
             ),
-          ),
-          Container(
-            height: 200,
-            child: RecommendedFriendsList(),
-          ),
-          const Text(
-            "Users who like the same movies as you",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const Text(
+              "Recommended Friends",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Container(
-            height: 200,
-            child: UsersWithSameTasteList(),
-          )
-        ],
+            Container(
+              height: 200,
+              child: RecommendedFriendsList(),
+            ),
+            const Text(
+              "Users who like the same movies as you",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Container(
+              height: 200,
+              child: UsersWithSameTasteList(),
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: NavBar(_selectedIndex, _onNavBarItemTapped),
     );

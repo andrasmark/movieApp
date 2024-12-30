@@ -138,93 +138,98 @@ class _FriendPageState extends State<FriendPage> {
       ),
       body: friendDetails == null
           ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Profile picture and button row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.account_circle, size: 100),
-                      isLoading
-                          ? CircularProgressIndicator()
-                          : ElevatedButton(
-                              onPressed: toggleFriendship,
-                              child: Text(
-                                  isFriend ? 'Remove Friend' : 'Add Friend'),
-                            ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  // Username and Bio
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Username: ${friendDetails?['userName'] ?? 'N/A'}",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Bio: ${friendDetails?['userBio'] ?? 'N/A'}",
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        Icon(Icons.account_circle, size: 100),
+                        isLoading
+                            ? CircularProgressIndicator()
+                            : ElevatedButton(
+                                onPressed: toggleFriendship,
+                                child: Text(
+                                  isFriend ? 'Remove Friend' : 'Add Friend',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  // Rated Movies
-                  Text(
-                    "Rated Movies",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  ratedMoviesList.isEmpty
-                      ? Text(
-                          "No rated movies yet.",
-                          style: TextStyle(fontSize: 16),
-                        )
-                      : Container(
-                          height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: ratedMoviesList.length,
-                            itemBuilder: (context, index) {
-                              final movie = ratedMoviesList[index];
-                              return RatedMovieCardWidget(movie: movie);
-                            },
+                    SizedBox(height: 20),
+                    // Username and Bio
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Username: ${friendDetails?['userName'] ?? 'N/A'}",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                  SizedBox(height: 20),
-                  // Watchlist
-                  Text(
-                    "Watchlist",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  watchlist.isEmpty
-                      ? Text(
-                          "No movies in the watchlist yet.",
-                          style: TextStyle(fontSize: 16),
-                        )
-                      : Container(
-                          height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: watchlist.length,
-                            itemBuilder: (context, index) {
-                              final movie = watchlist[index];
-                              return RatedMovieCardWidget(movie: movie);
-                            },
+                          SizedBox(height: 10),
+                          Text(
+                            "Bio: ${friendDetails?['userBio'] ?? 'N/A'}",
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ),
-                ],
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // Rated Movies
+                    Text(
+                      "Rated Movies",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    ratedMoviesList.isEmpty
+                        ? Text(
+                            "No rated movies yet.",
+                            style: TextStyle(fontSize: 16),
+                          )
+                        : Container(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: ratedMoviesList.length,
+                              itemBuilder: (context, index) {
+                                final movie = ratedMoviesList[index];
+                                return RatedMovieCardWidget(movie: movie);
+                              },
+                            ),
+                          ),
+                    SizedBox(height: 20),
+                    // Watchlist
+                    Text(
+                      "Watchlist",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    watchlist.isEmpty
+                        ? Text(
+                            "No movies in the watchlist yet.",
+                            style: TextStyle(fontSize: 16),
+                          )
+                        : Container(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: watchlist.length,
+                              itemBuilder: (context, index) {
+                                final movie = watchlist[index];
+                                return RatedMovieCardWidget(movie: movie);
+                              },
+                            ),
+                          ),
+                  ],
+                ),
               ),
             ),
     );

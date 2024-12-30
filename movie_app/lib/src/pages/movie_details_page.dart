@@ -229,16 +229,22 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
           actions: [
             TextButton(
               onPressed: () {
-                rateMovie(tempRating);
                 Navigator.of(context).pop();
               },
-              child: const Text('Submit'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
             TextButton(
               onPressed: () {
+                rateMovie(tempRating);
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(
+                'Submit',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
@@ -535,7 +541,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: showRatingDialog,
-                          child: const Text('RATE MOVIE'),
+                          child: const Text(
+                            'RATE MOVIE',
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ),
                         const SizedBox(height: 10),
                         ElevatedButton(
@@ -544,6 +553,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             isAddedToWatchlist
                                 ? 'ADDED TO WATCHLIST'
                                 : 'ADD TO WATCHLIST',
+                            style: TextStyle(color: Colors.blue),
                           ),
                         ),
                       ],
