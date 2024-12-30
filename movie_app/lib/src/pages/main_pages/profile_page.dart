@@ -6,6 +6,7 @@ import '../../components/NavBar.dart';
 import '../../components/rated_movie_card_widget.dart';
 import '../../models/movie_details_model.dart';
 import '../../services/api.dart';
+import '../authentication/login_page.dart';
 import 'home_page.dart';
 import 'movies_page.dart';
 import 'social_page.dart';
@@ -216,6 +217,20 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.blue,
             ),
             onPressed: _showEditProfileDialog,
+          ),
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              print('User logged out');
+              Navigator.pushReplacementNamed(context, LoginPage.id);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Logged out.'),
+                ),
+              );
+            },
+            icon: Icon(Icons.logout),
+            color: Colors.blue,
           ),
         ],
       ),
