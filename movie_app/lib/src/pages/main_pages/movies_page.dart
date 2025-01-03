@@ -57,8 +57,15 @@ class _MoviesPageState extends State<MoviesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Movies'),
+          titleTextStyle: const TextStyle(
+            fontSize: 25,
+            fontFamily: 'Moderustic',
+            color: Colors.black,
+          ),
+        ),
         body: Column(
             children: [
               CupertinoSearchTextField(
@@ -72,7 +79,7 @@ class _MoviesPageState extends State<MoviesPage> {
                   Icons.cancel,
                   color: Colors.grey,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black),
                 backgroundColor: Colors.grey.withOpacity(0.3),
                 onChanged: (value) {
                   if (value.isEmpty) {} else {
@@ -115,7 +122,6 @@ class _MoviesPageState extends State<MoviesPage> {
             ]
         ),
         bottomNavigationBar: NavBar(_selectedIndex, _onNavBarItemTapped),
-      ),
-    );
+      );
   }
 }
