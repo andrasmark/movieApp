@@ -50,7 +50,8 @@ class Api{
 
   Future<SearchModel> getSearchResults(String searchString) async{
     var endPoint = "search/movie?query=$searchString";
-    final url = "$baseUrl$endPoint$apiKey";
+    final url = "$baseUrl$endPoint";
+    print(" search url is $url");
     final response = await http.get(Uri.parse(url),headers: {
       'Authorization':
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjhiNmM4NGE3ODRlNmU2ZjdiMjg5ODE2ZDBlZjE1YSIsIm5iZiI6MTcyOTc1NDM1Ni40MjEsInN1YiI6IjY3MTlmNGY0ZTgzM2Q5MmVmMDVmZDJjNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Y9ZKHGPyHqQkfvpzLE_q5WfJSkY6Iu3ntMxpgwzys08"
