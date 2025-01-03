@@ -147,3 +147,64 @@ Future<List<Map<String, dynamic>?>> fetchRecommendedFriends() async {
     return [];
   }
 }
+
+Future<List<Map<String, dynamic>?>> fetchUsersWithSameTaste() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return [];
+
+  try {
+    // Fetch the current user's rated movies
+    final currentUserDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    final currentUserRatings = currentUserDoc.data()?['ratedMovies'] ?? {};
+
+    // Fetch the current user's friends
+    final currentUserFriends =
+        List<String>.from(currentUserDoc.data()?['friends'] ?? []);
+
+    // Filter movies rated above 3 by the current user
+    final highRatedMovies = currentUserRatings.entries
+        .where((entry) => (entry.value is num) && (entry.value > 3))
+        .map((entry) => entry.key)
+        .toSet();
+
+    print("Current User High Rated Movies: $highRatedMovies");
+
+    if (highRatedMovies.isEmpty) return [];
+
+    // Query all users
+    final allUsers = await FirebaseFirestore.instance.collection('users').get();
+    final similarUsers = <Map<String, dynamic>>[];
+
+    for (var doc in allUsers.docs) {
+      if (doc.id == user.uid) continue; // Skip the current user
+
+      // Check if the user is already a friend
+      if (currentUserFriends.contains(doc.id)) continue;
+
+      final userRatings = doc.data()['ratedMovies'] ?? {};
+      final userHighRatedMovies = userRatings.entries
+          .where((entry) => (entry.value is num) && (entry.value > 3))
+          .map((entry) => entry.key)
+          .toSet();
+
+      // Find intersection of high-rated movies
+      final commonMovies = highRatedMovies.intersection(userHighRatedMovies);
+      print('Common Movies for ${doc.id}: $commonMovies');
+
+      if (commonMovies.isNotEmpty) {
+        final userData = doc.data();
+        userData['uid'] = doc.id;
+        similarUsers.add(userData);
+      }
+    }
+
+    print('Similar Users Found: ${similarUsers.length}');
+    return similarUsers;
+  } catch (e) {
+    print('Error fetching users with similar ratings: $e');
+    return [];
+  }
+}

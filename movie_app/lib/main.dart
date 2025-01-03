@@ -8,7 +8,11 @@ import 'package:movie_app/src/pages/main_pages/movies_page.dart';
 import 'package:movie_app/src/pages/main_pages/profile_page.dart';
 import 'package:movie_app/src/pages/main_pages/social_page.dart';
 import 'package:movie_app/src/pages/movie_details_page.dart';
+
+import 'package:movie_app/src/services/auth_checker.dart';
+
 import 'package:movie_app/src/pages/actor_details_page.dart';
+
 
 import 'firebase_options.dart';
 
@@ -40,7 +44,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system, // Use system theme (light/dark)
-      home: LoginPage(),
+      home: AuthChecker(),
       routes: {
         HomePage.id: (context) => HomePage(),
         MoviesPage.id: (context) => MoviesPage(),

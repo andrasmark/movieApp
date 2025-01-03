@@ -1,13 +1,10 @@
 import 'dart:convert';
 
-import 'package:movie_app/src/models/movie_model.dart';
+import 'package:http/http.dart' as http;
 import 'package:movie_app/src/models/movie_details_model.dart';
+import 'package:movie_app/src/models/movie_model.dart';
 import 'package:movie_app/src/models/movie_recommendations_model.dart';
 import 'package:movie_app/src/models/actor_details_model.dart';
-
-
-import 'package:http/http.dart' as http;
-
 
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
