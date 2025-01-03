@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/movie_details_model.dart';
 import '../models/movie_model.dart';
 import '../models/movie_recommendations_model.dart';
+import '../models/search_model.dart';
 
 const apiKey = 'ff8b6c84a784e6e6f7b289816d0ef15a';
 
@@ -47,7 +48,7 @@ class Api{
     }
   }
 
-  Future<List<Movie>> getSearchResults(String searchString) async{
+  Future<SearchModel> getSearchResults(String searchString) async{
     var endPoint = "search/movie?query=$searchString";
     final url = "$baseUrl$endPoint$apiKey";
     final response = await http.get(Uri.parse(url),headers: {
@@ -56,9 +57,7 @@ class Api{
     });
     if(response.statusCode == 200){
       log("Success getSearchResult");
-      final List<dynamic> data = json.decode(response.body)['results'];
-      List<Movie> movies = data.map((movie) => Movie.fromMap(movie)).toList();
-      return movies;
+      return SearchModel.fromJson(jsonDecode(response.body));
     }
     else{
       throw Exception('Failed to load search query');
