@@ -31,14 +31,19 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Flexible(
-                child: Hero(
-                  tag: 'logo',
-                  child: Container(
-                    height: 200.0,
-                    child: Image.asset('images/logo.png'),
-                  ),
-                ),
+              // Flexible(
+              //   child: Hero(
+              //     tag: 'logo',
+              //     child: Container(
+              //       height: 200.0,
+              //       child: Image.asset('images/logo.png'),
+              //     ),
+              //   ),
+              // ),
+              Text(
+                'Sign In',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
               SizedBox(
                 height: 48.0,
