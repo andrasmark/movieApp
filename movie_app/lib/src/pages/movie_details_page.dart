@@ -71,7 +71,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   Future<void> checkIfInWatchlist() async {
     try {
       final userRef =
-          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      FirebaseFirestore.instance.collection('users').doc(user.uid);
       final userDoc = await userRef.get();
 
       if (userDoc.exists) {
@@ -88,7 +88,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   void toggleWatchlist() async {
     try {
       final userRef =
-          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      FirebaseFirestore.instance.collection('users').doc(user.uid);
       final movieId = widget.movieID;
 
       if (isAddedToWatchlist) {
@@ -128,7 +128,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   Future<double> fetchAverageRating() async {
     final movieId = widget.movieID.toString();
     final movieRef =
-        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    FirebaseFirestore.instance.collection('movies').doc(movieId);
     final movieDoc = await movieRef.get();
 
     if (movieDoc.exists && movieDoc.data()!.containsKey('averageRating')) {
@@ -141,7 +141,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   Future<Map<String, dynamic>> fetchRatingsAndUsers() async {
     final movieId = widget.movieID.toString();
     final movieRef =
-        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    FirebaseFirestore.instance.collection('movies').doc(movieId);
     final movieDoc = await movieRef.get();
 
     if (movieDoc.exists) {
@@ -154,7 +154,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
             .doc(userId)
             .get();
         userNames[userId] =
-            userDoc.exists ? userDoc['userName'] : 'Unknown User';
+        userDoc.exists ? userDoc['userName'] : 'Unknown User';
       }
 
       return ratings
@@ -166,9 +166,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
   Future<void> rateMovie(double rating) async {
     final movieId = widget.movieID.toString();
     final movieRef =
-        FirebaseFirestore.instance.collection('movies').doc(movieId);
+    FirebaseFirestore.instance.collection('movies').doc(movieId);
     final userRef =
-        FirebaseFirestore.instance.collection('users').doc(user.uid);
+    FirebaseFirestore.instance.collection('users').doc(user.uid);
 
     // Update user's ratedMovies
     await userRef.update({
@@ -182,9 +182,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
       ratings[user.uid] = rating;
 
       final averageRating = ratings.values.fold<double>(
-            0.0,
+        0.0,
             (sum, r) => sum + (r as double),
-          ) /
+      ) /
           ratings.length;
 
       await movieRef.update({
@@ -264,8 +264,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
 
     return Scaffold(
       body: Container(
-        // Change the background color if we want here
-        // color: Colors.black45,
         child: SingleChildScrollView(
           child: FutureBuilder(
             future: movieDetails,
@@ -338,7 +336,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-
                           // Cast section
                           FutureBuilder<List<dynamic>>(
                             future: movieCast,
@@ -348,17 +345,188 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                               } else if (snapshot.hasError) {
                                 return const Text('Failed to load cast.');
                               } else if (snapshot.hasData) {
-                                final cast = snapshot.data!
-                                    .map((actorData) => Actor.fromMap(actorData))
-                                    .toList();
-
+                                final cast = snapshot.data!;
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 0.0),
-                                      child: const Text(
-                                        "Cast",
+                                    const Text(
+                                      "Cast",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    cast.isEmpty
+                                        ? const Text("No cast data available.")
+                                        : SizedBox(
+                                      height: 300,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: cast.length,
+                                        itemBuilder: (context, index) {
+                                          final actor = Actor.fromMap(cast[index]);
+                                          return ActorCardWidget(actor: actor);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return const Text("No cast data available.");
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          // Average Rating
+                          FutureBuilder<double>(
+                            future: averageRatingFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return const Text(
+                                  'Failed to load average rating',
+                                  style: TextStyle(color: Colors.grey),
+                                );
+                              } else {
+                                final averageRating = snapshot.data!;
+                                if (averageRating > 0) {
+                                  return Text(
+                                    'Average Rating: ${averageRating.toStringAsFixed(1)} / 5',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    'No one rated this movie yet',
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.grey),
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          FutureBuilder<Map<String, dynamic>>(
+                            future: ratingsFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return const Text(
+                                  'Failed to load ratings',
+                                  style: TextStyle(color: Colors.grey),
+                                );
+                              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                                final ratings = snapshot.data!;
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(vertical: 10),
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black26,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  height: 120,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: ratings.entries.map((entry) {
+                                        final userId = entry.key;
+                                        final userRating = entry.value as double;
+
+                                        return Container(
+                                          width: 180,
+                                          margin: const EdgeInsets.only(right: 10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black45,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.account_circle,
+                                                size: 40,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                userId,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: List.generate(5, (index) {
+                                                  return Icon(
+                                                    index < userRating
+                                                        ? Icons.star
+                                                        : Icons.star_border,
+                                                    color: Colors.amber,
+                                                    size: 18,
+                                                  );
+                                                }),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const Text(
+                                'No ratings available.',
+                                style: TextStyle(color: Colors.grey),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: showRatingDialog,
+                            child: const Text(
+                              'RATE MOVIE',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: toggleWatchlist,
+                            child: Text(
+                              isAddedToWatchlist
+                                  ? 'ADDED TO WATCHLIST'
+                                  : 'ADD TO WATCHLIST',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          // Recommended movies section
+                          FutureBuilder(
+                            future: movieRecommendationModel,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              } else if (snapshot.hasData) {
+                                final recommendations = snapshot.data!.results;
+                                return recommendations.isNotEmpty
+                                    ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 10.0),
+                                      child: Text(
+                                        "More like this",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -367,237 +535,40 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    SizedBox(
-                                      height: 300,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: cast.length,
-                                        itemBuilder: (context, index) {
-                                          final actor = cast[index];
-                                          return ActorCardWidget(actor: actor);
-                                        },
+                                    GridView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.only(left: 10, right: 10),
+                                      itemCount: recommendations.length,
+                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        mainAxisSpacing: 15,
+                                        childAspectRatio: 2 / 3,
                                       ),
+                                      itemBuilder: (context, index) {
+                                        final movie = convertResultToMovie(recommendations[index]);
+                                        return MovieCardWidget(movie: movie);
+                                      },
                                     ),
-
+                                  ],
+                                )
+                                    : const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "No recommendations available.",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
-                                ],
-                              );
-                            }
-                            return const Text("No cast data available.");
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        // Average Rating
-                        FutureBuilder<double>(
-                          future: averageRatingFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return const Text(
-                                'Failed to load average rating',
-                                style: TextStyle(color: Colors.grey),
-                              );
-                            } else {
-                              final averageRating = snapshot.data!;
-                              if (averageRating > 0) {
-                                return Text(
-                                  'Average Rating: ${averageRating.toStringAsFixed(1)} / 5',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              } else {
-                                return Text(
-                                  'No one rated this movie yet',
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.grey),
                                 );
                               }
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        FutureBuilder<Map<String, dynamic>>(
-                          future: ratingsFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return const Text(
-                                'Failed to load ratings',
-                                style: TextStyle(color: Colors.grey),
-                              );
-                            } else if (snapshot.hasData &&
-                                snapshot.data!.isNotEmpty) {
-                              final ratings = snapshot.data!;
-                              return Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                height: 120,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: ratings.entries.map((entry) {
-                                      final userId = entry.key;
-                                      final userRating = entry.value as double;
-
-                                      return Container(
-                                        width: 180,
-                                        margin:
-                                            const EdgeInsets.only(right: 10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black45,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.account_circle,
-                                              size: 40,
-                                              color: Colors.white70,
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              userId,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children:
-                                                  List.generate(5, (index) {
-                                                return Icon(
-                                                  index < userRating
-                                                      ? Icons.star
-                                                      : Icons.star_border,
-                                                  color: Colors.amber,
-                                                  size: 18,
-                                                );
-                                              }),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              );
-                            }
-                            return const Text(
-                              'No ratings available.',
-                              style: TextStyle(color: Colors.grey),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: showRatingDialog,
-                          child: const Text(
-                            'RATE MOVIE',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: toggleWatchlist,
-                          child: Text(
-                            isAddedToWatchlist
-                                ? 'ADDED TO WATCHLIST'
-                                : 'ADD TO WATCHLIST',
-                            style: TextStyle(color: Colors.blue),
-
-                            
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: showRatingDialog,
-                            child: const Text('RATE MOVIE'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: toggleWatchlist,
-                            child: Text(
-                              isAddedToWatchlist ? 'ADDED TO WATCHLIST' : 'ADD TO WATCHLIST',
-                            ),
+                              return const SizedBox();
+                            },
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    // Recommended movies section
-                    FutureBuilder(
-                      future: movieRecommendationModel,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (snapshot.hasData) {
-                          final recommendations = snapshot.data!.results;
-                          final movies = recommendations.map((result) => convertResultToMovie(result)).toList();
-                          if (movies.isEmpty) return const SizedBox();
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 15.0),
-                                child: const Text(
-                                  "More like this",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                                itemCount: recommendations.length,
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  mainAxisSpacing: 15,
-                                  childAspectRatio: 2 / 3,
-                                ),
-                                itemBuilder: (context, index) {
-                                  final movie = movies[index];
-                                  if(movie.id != 0 &&
-                                      movie.title != 'NULL' &&
-                                      movie.overview != 'NULL' &&
-                                      movie.posterPath != 'NULL' &&
-                                      movie.backDropPath != 'NULL') {
-                                    return MovieCardWidget(movie: movie);
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
-                          );
-                        }
-                        return const Text("No recommendations available.");
-                      },
-                    ),
-
                   ],
                 );
               }
@@ -605,7 +576,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsPage> {
             },
           ),
         ),
-      )
+      ),
     );
   }
 }
