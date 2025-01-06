@@ -51,6 +51,31 @@ class Api {
     }
   }
 
+  Future<List<Movie>> getSearchResults(String searchString) async {
+    var endPoint = "search/movie?query=$searchString";
+    final url = "$baseUrl$endPoint";
+    print(" search url is $url");
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjhiNmM4NGE3ODRlNmU2ZjdiMjg5ODE2ZDBlZjE1YSIsIm5iZiI6MTcyOTc1NDM1Ni40MjEsInN1YiI6IjY3MTlmNGY0ZTgzM2Q5MmVmMDVmZDJjNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Y9ZKHGPyHqQkfvpzLE_q5WfJSkY6Iu3ntMxpgwzys08"
+    });
+
+    if (response.statusCode == 200) {
+      // Parse the response body and map it to a list of Movie objects
+      var jsonData = jsonDecode(response.body);
+      List<dynamic> results = jsonData['results'];
+
+      // Convert each result into a Movie object
+      List<Movie> movieList = results.map((item) {
+        return Movie.fromMap(item);
+      }).toList();
+
+      return movieList;
+    } else {
+      throw Exception('Failed to load search query');
+    }
+  }
+
+
   Future<MovieDetailsModel> getMovieDetails(int movieId) async {
     final url = '${baseUrl}movie/$movieId?api_key=$apiKey';
     final response = await http.get(Uri.parse(url));
@@ -124,6 +149,54 @@ class Api {
     } else {
       print('Error: ${response.body}');
       throw Exception('Failed to load recent projects');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getMovieGenres() async {
+    final url = '${baseUrl}genre/movie/list?api_key=$apiKey&language=en-US';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['genres'] as List;
+      return data.map((genre) => {
+        'id': genre['id'],
+        'name': genre['name'],
+      }).toList();
+    } else {
+      throw Exception('Failed to load genres');
+    }
+  }
+
+  Future<List<Movie>> getMoviesByGenre(int genreId) async {
+    final url = '${baseUrl}discover/movie?api_key=$apiKey&with_genres=$genreId';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['results'] as List;
+      return data.map((movieData) => Movie.fromMap(movieData)).toList();
+    } else {
+      throw Exception('Failed to load movies by genre');
+    }
+  }
+
+
+  Future<List<Movie>> getMoviesByFilter({int? genreId, int? year}) async {
+    String url = '${baseUrl}discover/movie?api_key=$apiKey';
+
+    if (genreId != null) {
+      url += '&with_genres=$genreId';
+    }
+    if (year != null) {
+      url += '&primary_release_year=$year';
+    }
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['results'];
+      return data.map((movie) => Movie.fromMap(movie)).toList();
+    } else {
+      throw Exception('Failed to load movies by filters');
     }
   }
 
