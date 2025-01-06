@@ -56,95 +56,108 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        titleTextStyle: const TextStyle(
-          fontSize: 25,
-          fontFamily: 'Moderustic',
-          color: Colors.black,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Upcoming',
-                style: TextStyle(color: Colors.black),
-              ),
-              FutureBuilder<List<Movie>>(
-                future: upcomingMovies,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final movies = snapshot.data!;
-                  return CarouselSlider.builder(
-                    itemCount: movies.length,
-                    itemBuilder: (context, index, realIndex) {
-                      final movie = movies[index];
-                      return MovieCardWidget(movie: movie); // Pass movie to updated widget
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Upcoming',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                FutureBuilder<List<Movie>>(
+                  future: upcomingMovies,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final movies = snapshot.data!;
+                    return CarouselSlider.builder(
+                      itemCount: movies.length,
+                      itemBuilder: (context, index, realIndex) {
+                        final movie = movies[index];
+                        return MovieCardWidget(movie: movie);
+                      },
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        aspectRatio: 1.4,
+                        autoPlayInterval: const Duration(seconds: 4),
+                      ),
+                    );
+                  },
+                ),
+                const Text(
+                  'Trending',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  height: 200,
+                  child: FutureBuilder<List<Movie>>(
+                    future: popularMovies,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final movies = snapshot.data!;
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: movies.length,
+                        itemBuilder: (context, index) {
+                          final movie = movies[index];
+                          return MovieCardWidget(movie: movie);
+                        },
+                      );
                     },
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      aspectRatio: 1.4,
-                      autoPlayInterval: const Duration(seconds: 4),
-                    ),
-                  );
-                },
-              ),
-              const Text('Trending'),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                height: 200,
-                child: FutureBuilder<List<Movie>>(
-                  future: popularMovies,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    final movies = snapshot.data!;
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: movies.length,
-                      itemBuilder: (context, index) {
-                        final movie = movies[index];
-                        return MovieCardWidget(movie: movie);
-                      },
-                    );
-                  },
+                  ),
                 ),
-              ),
-              const Text('Top rated'),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                height: 200,
-                child: FutureBuilder<List<Movie>>(
-                  future: topRatedMovies,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    final movies = snapshot.data!;
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: movies.length,
-                      itemBuilder: (context, index) {
-                        final movie = movies[index];
-                        return MovieCardWidget(movie: movie);
-                      },
-                    );
-                  },
+                const Text(
+                    'Top rated',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  height: 200,
+                  child: FutureBuilder<List<Movie>>(
+                    future: topRatedMovies,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final movies = snapshot.data!;
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: movies.length,
+                        itemBuilder: (context, index) {
+                          final movie = movies[index];
+                          return MovieCardWidget(movie: movie);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: NavBar(_selectedIndex, _onNavBarItemTapped),
     );
   }
+
 }
